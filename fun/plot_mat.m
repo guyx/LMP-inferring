@@ -1,6 +1,7 @@
 function y = plot_mat(B,map,title_txt,norm,e,showtext,savedir)
 % y = PLOT_LAP(B,map,norm,e,title_txt,showtext)
 %% default arguments
+
 if nargin < 7
     savedir = 'D:\research\MyProject\LMP\Topology\paper\MyPaper\figure\';
     if nargin < 6
@@ -15,6 +16,18 @@ if nargin < 7
                         map = 'jet';
                     end
                 end
+
+if nargin < 6
+    showtext = 0;
+    if nargin < 5 
+        e = 1e-3;
+        if nargin < 4
+            norm = 1;
+            if nargin <3 
+                title_txt = 'MATRIX';
+                if nargin <2
+                    map = 'jet';
+
             end
         end
     end

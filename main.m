@@ -8,7 +8,7 @@ addpath('fun')
 mpc = loadcase('case30');
 REF = find(mpc.bus(:,2)==3);
 % delete 'data/KaggleLoads.mat'
-%%
+
 try
     load data/KaggleLoads.mat
 catch error
@@ -16,7 +16,7 @@ catch error
     data_preprocess,
 end
 block_offer,
-db = create_db(mpc,KaggleLoads./0.625,c,pmin,pmax); %除以0.625什么意思
+db = create_db(mpc,KaggleLoads./0.625,c,pmin,pmax); 
 clear c pmin pmax,
 
 %%
@@ -31,13 +31,15 @@ load_idx = find(mdata.loads(:,1)>0)';
 %% 
 % online admm
 % load data/Market_with_changes.mat
-% 节点电纳矩阵
+
 Bo = makeBmatrix(mpc);
-% 增广电纳矩阵
+
 L0 = get_lap(Bo,REF);
+
 plot_mat(L0,'jet','B0 in IEEE case30');
 Bo = Bo / max(max(Bo));
 plot_mat(Bo,'jet','B in IEEE case30');
+
 % mdata.PricesClean = normc(mdata.PricesClean);
 acc=[];
 tpr=[];
@@ -56,7 +58,7 @@ for k = 3:30
             vals = [vals; Bo(i,j)];
         end
     end
-    % 行阶梯型矩阵
+
     [~,jb] = rref(mdata.PricesClean(:,1:10));
     B_part = B_partial(mdata.PricesClean(:,jb),[0.01,0.01,0.01*2],rows,cols,vals);
     L_part = get_lap(B_part,REF);
@@ -68,7 +70,9 @@ for k = 3:30
 end
 figure,
 plot(acc)
-B_my = B_estimate(mdata.PricesClean(:,jb),[0.01,0.01,0.01*2]);
+
+B_my = B_estimate(mdata.PricesClean(:,1:jb),[0.01,0.01,0.01*2]);
+
 baseline = evaluation(L0, get_lap(B_my,REF));
 
 hold on,
@@ -107,7 +111,6 @@ plot_mat(B_final2,'jet','B2');
 L_final2 = get_lap(B_final2,REF);
 plot_mat(L_final2,'jet','L2');
 
-%%
 
 a = online_results.B3(22,25,:);
 b = online_results2.B3(22,25,:);
