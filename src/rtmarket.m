@@ -12,20 +12,21 @@ function market = rtmarket(db, h)
 %% sample random quantities
 loads = db.loads(:,h) + sqrt(db.loads(:,h)/10).*randn(db.N,1);
 market.loads = loads;
+market.rare = 0;
 
 c = db.c + (((rand(db.N,1) - 0.5)*5) * ones(1,5)) .* (db.c~=0);
 market.c = c;
-
 %% Solve market using yalmip
 tic,
-settings = sdpsettings('solver','mosek','verbose',0);
+settings = sdpsettings('solver','cplex','verbose',0);
 clear('yalmip')
 P = sdpvar(db.N,5);
-F = [db.pmin<=P, P<=db.pmax, (sum(loads-sum(P,2))==0):'balance',...
+F = [(db.pmin<=P):'Pmin', (P<=db.pmax):'Pmax', ...
+    (sum(loads-sum(P,2))==0):'balance',...
     (-db.flowlimit<=diag(db.x)*db.Ar*db.Bri*(sum(P(2:end,:),2)-loads(2:end) )):'conlow',...
     (diag(db.x)*db.Ar*db.Bri*(sum(P(2:end,:),2)-loads(2:end) )<=db.flowlimit):'conhigh'];
 
-diagnostic = solvesdp(F,c(:)'*P(:),settings);
+diagnostic = optimize(F,c(:)'*P(:),settings);
 if diagnostic.problem,
     %% typically infeasible problem
     market.mu0 = 0;
@@ -43,6 +44,9 @@ else
     market.P = double(P);
     market.s = db.Ar'*diag(db.x)*(market.mul-market.muh);
     market.price = db.Bri*market.s;
+    if max(abs(market.price)) > 1.5e2
+        market.rare = 1;
+    end
 end;
 
 if diagnostic.problem,

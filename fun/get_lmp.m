@@ -5,10 +5,15 @@ mdata2.Prices = [];
 mdata2.index = [];
 mdata2.mu0 = [];
 settings = sdpsettings('solver','mosek','verbose',0);
-for h = time
+
+for i = 1:length(time)
+    if mod(i,20) == 0
+        fprintf('%d',i)
+    end
+    h = time(i);
     loads = mdata.loads(:,h);
     c = mdata.c(:,:,h);
-    tic,
+    % tic,
     P = sdpvar(db.N,5);
     F = [db.pmin<=P, P<=db.pmax, (sum(loads-sum(P,2))==0):'balance',...
     (-db.flowlimit<=diag(db.x)*db.Ar*db.Bri*(sum(P(2:end,:),2)-loads(2:end) )):'conlow',...
@@ -46,7 +51,7 @@ for h = time
             market.cong = 1;
         end
     end
-    t = toc;
+    % t = toc;
     % fprintf('Demand: %g. Capacity: %g. %s Time: %g\n', sum(loads),sum(sum(db.pmax)),str,t)
     %%
     % save the results
@@ -55,7 +60,7 @@ for h = time
     mdata2.Prices = [mdata2.Prices, market.price];
     mdata2.mu0 = [mdata2.mu0, market.mu0];
     if market.success && market.cong
-        mdata2.index = [mdata2.index, h];
+        mdata2.index = [mdata2.index, i];
     end
 end
 

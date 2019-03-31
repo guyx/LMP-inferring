@@ -74,7 +74,10 @@ for time = 1:T,
     cost(time) = sum(sum(abs(S))) + k(1)*trace(P*B1) - k(2)*log(det(B3)) + k(1)/(N-1)*norm(b,1);
     
     %     disp(['Iteration ' num2str(iteration) '. Error ' num2str(error) '; Primal:' num2str(error_pri) '; Dual:' num2str(error_dual) '; Cost: ' num2str(cost(iteration))]);
-    toc
+    toc;
+    if rem(time,1000) == 0
+        plot_mat(B3,'jet','Br in IEEE case30');
+    end
 end;
 
 output.B1 = B1;

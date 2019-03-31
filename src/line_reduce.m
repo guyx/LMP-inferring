@@ -10,6 +10,6 @@ function db2 = line_reduce(db, mdata, REF, time)
     L2(n,m) = 0;
     db2 = L2A(L2,REF);
     Pf = diag(db2.x)*db2.Ar*db2.Bri* ...
-        (mdata.gen(2:end,1:time)-mdata.loads(2:end,1:time) );
+        (mdata.gen(2:end,time)-mdata.loads(2:end,time) );
     db2.flowlimit = max(abs(Pf),[],2);
 end
