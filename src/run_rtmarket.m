@@ -21,7 +21,7 @@ for h = 1:744
         mdata.gen = [mdata.gen, market.p];
         mdata.mu0 = [mdata.mu0, market.mu0];
         mdata.c(:,:,h*12-12+i) = market.c;
-        if market.success && market.cong
+        if market.success && market.cong && ~market.rare
             mdata.index = [mdata.index, (h-1)*12+i];
         end
     end

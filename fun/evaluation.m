@@ -14,7 +14,7 @@ for e = eps:1e-2:max(abs(B_triu))
     TP = length(intersect(IDX0,IDX));
     FP = length(setdiff(IDX,IDX0));
     TPR = [TPR; TP/length(IDX0)]; 
-    FPR = [FPR; FP/( (nb-1)*(nb-2)/2 - length(IDX0) )];
+    FPR = [FPR; FP/( (nb-1)*(nb-2)/2 - length(IDX0) + eps)];
 end
 AUC = sum(([1;FPR]-[FPR;0]).*([1;TPR] + [TPR;0])/2 );
 end

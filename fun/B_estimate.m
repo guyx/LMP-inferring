@@ -1,5 +1,13 @@
 function B = B_estimate(PI,k,avg_degree,e)
-% function B = B_estimate(PI_E,PI_C,REF,k,avg_degree,e)
+% function B = B_estimate(PI,REF,k,avg_degree,e)
+% The original non-convex problem:
+% min norm(B*PI,0)+k*norm(B*e,0)
+% s.t. B>0, B*e>0
+
+% This function aims to solve the convex opt problem:
+% min norm(B*PI,1)+k1*tr(PB)-k2*log|B|+k3*norm(B*e,1)
+% s.t. B>0, B<=I, B*e>0
+
 if nargin < 4
     e = 1e-3;
     if nargin < 3

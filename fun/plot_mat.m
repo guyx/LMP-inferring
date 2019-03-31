@@ -9,10 +9,13 @@ if nargin < 6
             norm = 1;
             if nargin <3 
                 title_txt = 'MATRIX';
+                if nargin <2
+                    map = 'jet';
             end
         end
     end
 end
+B = double(B);
 B(abs(B)<e) = 0;
 figure,
 colormap(map)
